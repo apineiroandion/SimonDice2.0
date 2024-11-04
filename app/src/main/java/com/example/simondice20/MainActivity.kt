@@ -15,7 +15,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val viewModel: MyViewModel = MyViewModel()
 
-        enableEdgeToEdge()
+        //enableEdgeToEdge()
         setContent {
             SimonDice20Theme {
                 com.example.simondice20.UI(model = viewModel)

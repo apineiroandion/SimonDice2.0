@@ -7,6 +7,9 @@ object Datos {
     var ronda = mutableStateOf(0)
     val secuenciaMaquina = mutableListOf<Int>()
     val secuenciaJugador = mutableListOf<Int>()
+    var toastText = ""
+
+
 }
 
 enum class Colors (val id: Int, val nombre: String, val color: Color, val colorPressed: Color){

@@ -1,7 +1,10 @@
 package com.example.simondice20
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -10,12 +13,14 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.simondice20.Datos.secuenciaMaquina
@@ -28,33 +33,51 @@ fun UI(model: MyViewModel) {
 }
 
 @Composable
+fun createButton(color: Colors, context: Context, MyViewModel: MyViewModel){
+    val buttonColor by remember { mutableStateOf(color.color) }
+    Button(onClick = { MyViewModel.click(color.id, context) },
+        modifier = Modifier
+            .padding(10.dp)
+            .size(150.dp, 100.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = buttonColor,
+            contentColor = Color.White,
+        )
+    ) {
+        Text(text = color.nombre)
+    }
+}
+
+@Composable
 fun Greeting(modifier: Modifier = Modifier, MyViewModel: MyViewModel) {
-    val redButtonColor = remember { mutableStateOf(Color.Red) }
-    val blueButtonColor = remember { mutableStateOf(Color.Blue) }
-    val greenButtonColor = remember { mutableStateOf(Color.Green) }
-    val yellowButtonColor = remember { mutableStateOf(Color.Yellow) }
+    val context = LocalContext.current
+    val redButtonColor = remember { mutableStateOf(Colors.RED.color) }
+    val blueButtonColor = remember { mutableStateOf(Colors.BLUE.color) }
+    val greenButtonColor = remember { mutableStateOf(Colors.GREEN.color) }
+    val yellowButtonColor = remember { mutableStateOf(Colors.YELLOW.color) }
     suspend fun colorearSecuencia (){
         for (i in secuenciaMaquina){
+            delay(300)
             when(i){
                 Colors.RED.id -> {
                     redButtonColor.value = Colors.RED.colorPressed
                     delay(1000)
-                    redButtonColor.value = Color.Red
+                    redButtonColor.value = Colors.RED.color
                 }
                 Colors.BLUE.id -> {
                     blueButtonColor.value = Colors.BLUE.colorPressed
                     delay(1000)
-                    blueButtonColor.value = Color.Blue
+                    blueButtonColor.value = Colors.BLUE.color
                 }
                 Colors.GREEN.id -> {
                     greenButtonColor.value = Colors.GREEN.colorPressed
                     delay(1000)
-                    greenButtonColor.value = Color.Green
+                    greenButtonColor.value = Colors.GREEN.color
                 }
                 Colors.YELLOW.id -> {
                     yellowButtonColor.value = Colors.YELLOW.colorPressed
                     delay(1000)
-                    yellowButtonColor.value = Color.Yellow
+                    yellowButtonColor.value = Colors.YELLOW.color
                 }
             }
         }
@@ -71,7 +94,7 @@ fun Greeting(modifier: Modifier = Modifier, MyViewModel: MyViewModel) {
         )
         Row {
             Column {
-                Button(onClick = { MyViewModel.click(Colors.RED.id) },
+                Button(onClick = { MyViewModel.click(Colors.RED.id, context) },
                     modifier = Modifier
                         .padding(10.dp)
                         .size(150.dp, 100.dp),
@@ -82,7 +105,7 @@ fun Greeting(modifier: Modifier = Modifier, MyViewModel: MyViewModel) {
                 ) {
                     Text(text = Colors.RED.nombre)
                 }
-                Button(onClick = { MyViewModel.click(Colors.BLUE.id) },
+                Button(onClick = { MyViewModel.click(Colors.BLUE.id, context) },
                     modifier = Modifier
                         .padding(10.dp)
                         .size(150.dp, 100.dp),
@@ -95,7 +118,7 @@ fun Greeting(modifier: Modifier = Modifier, MyViewModel: MyViewModel) {
                 }
             }
             Column {
-                Button(onClick = { MyViewModel.click(Colors.GREEN.id) },
+                Button(onClick = { MyViewModel.click(Colors.GREEN.id, context) },
                     modifier = Modifier
                         .padding(10.dp)
                         .size(150.dp, 100.dp),
@@ -106,7 +129,7 @@ fun Greeting(modifier: Modifier = Modifier, MyViewModel: MyViewModel) {
                 ) {
                     Text(text = Colors.GREEN.nombre)
                 }
-                Button(onClick = { MyViewModel.click(Colors.YELLOW.id) },
+                Button(onClick = { MyViewModel.click(Colors.YELLOW.id, context) },
                     modifier = Modifier
                         .padding(10.dp)
                         .size(150.dp, 100.dp),
@@ -119,6 +142,7 @@ fun Greeting(modifier: Modifier = Modifier, MyViewModel: MyViewModel) {
                 }
             }
         }
+        Spacer(modifier = Modifier.weight(1f))
         val coroutineScope = rememberCoroutineScope()
         TextButton(onClick = {
             coroutineScope.launch {
@@ -137,4 +161,5 @@ fun Greeting(modifier: Modifier = Modifier, MyViewModel: MyViewModel) {
             Text(text = "START ronda: " + Datos.ronda.value)
         }
     }
+
 }
