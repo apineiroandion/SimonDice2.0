@@ -1,7 +1,6 @@
 package com.example.simondice20
 
 import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,10 +16,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.simondice20.Datos.secuenciaMaquina
@@ -33,9 +34,18 @@ fun UI(model: MyViewModel) {
 }
 
 @Composable
-fun createButton(color: Colors, context: Context, MyViewModel: MyViewModel){
+fun createButton(color: Colors, context: Context, myViewModel: MyViewModel){
     val buttonColor by remember { mutableStateOf(color.color) }
-    Button(onClick = { MyViewModel.click(color.id, context) },
+    var _activo by remember { mutableStateOf(myViewModel.estadoLiveData.value!!.boton_activo) }
+
+    myViewModel.estadoLiveData.observe(LocalLifecycleOwner.current) {
+        // Log.d(TAG_LOG, "Oserver Estado: ${miViewModel.estadoLiveData.value!!.name}")
+        _activo = myViewModel.estadoLiveData.value!!.boton_activo
+    }
+
+    Button(
+        onClick = {
+            if(_activo) myViewModel.click(color.id, context) },
         modifier = Modifier
             .padding(10.dp)
             .size(150.dp, 100.dp),
@@ -81,6 +91,7 @@ fun Greeting(modifier: Modifier = Modifier, MyViewModel: MyViewModel) {
                 }
             }
         }
+        MyViewModel.estadoJugando()
     }
 
     Column (
@@ -94,6 +105,7 @@ fun Greeting(modifier: Modifier = Modifier, MyViewModel: MyViewModel) {
         )
         Row {
             Column {
+                //createButton(color = Colors.RED, context = context, myViewModel = MyViewModel)
                 Button(onClick = { MyViewModel.click(Colors.RED.id, context) },
                     modifier = Modifier
                         .padding(10.dp)
