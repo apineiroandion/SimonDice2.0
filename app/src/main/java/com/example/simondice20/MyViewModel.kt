@@ -39,7 +39,7 @@ class MyViewModel: ViewModel() {
             Log.d("TAG", "CORRECTO")
             setToastText("Ronda " + ronda.value + " superada")
             Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
-            estadoEsperando()
+            generarSecuencia()
         }
         else if (secuenciaMaquina.subList(0, secuenciaJugador.size) == secuenciaJugador){
             Log.d("TAG", "CORRECTO")

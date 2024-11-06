@@ -9,6 +9,7 @@ object Datos {
     val secuenciaJugador = mutableListOf<Int>()
     var toastText = ""
 
+
 }
 
 /**
@@ -24,8 +25,8 @@ enum class Colors (val id: Int, val nombre: String, val color: Color, val colorP
 /**
  * Estados
  */
-enum class Estados(val start_activo: Boolean, val boton_activo: Boolean) {
-    ESPERANDO(start_activo = true, boton_activo = false),
-    GENERANDO(start_activo = false, boton_activo = false),
-    JUGANDO(start_activo = false, boton_activo = true),
+enum class Estados(val start_activo: Boolean, val boton_activo: Boolean, val colorearSecuencia: Boolean) {
+    ESPERANDO(start_activo = true, boton_activo = false, colorearSecuencia = false),
+    GENERANDO(start_activo = false, boton_activo = true, colorearSecuencia = true),
+    JUGANDO(start_activo = false, boton_activo = true, colorearSecuencia = false),
 }
