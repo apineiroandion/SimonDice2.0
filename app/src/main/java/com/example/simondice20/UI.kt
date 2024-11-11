@@ -36,7 +36,7 @@ fun UI(model: MyViewModel) {
 }
 
 @Composable
-fun createButton(color: Colors, context: Context, myViewModel: MyViewModel, colorButton: Color = color.color) {
+fun CreateButton(color: Colors, context: Context, myViewModel: MyViewModel, colorButton: Color = color.color) {
     var _activo by remember { mutableStateOf(myViewModel.estadoLiveData.value!!.boton_activo) }
 
     myViewModel.estadoLiveData.observe(LocalLifecycleOwner.current) {
@@ -146,12 +146,12 @@ fun Greeting(modifier: Modifier = Modifier, myViewModel: MyViewModel) {
         )
         Row {
             Column {
-                createButton(color = Colors.RED, context = context, myViewModel = myViewModel, colorButton = redButtonColor.value)
-                createButton(color = Colors.BLUE, context = context, myViewModel = myViewModel, colorButton = blueButtonColor.value)
+                CreateButton(color = Colors.RED, context = context, myViewModel = myViewModel, colorButton = redButtonColor.value)
+                CreateButton(color = Colors.BLUE, context = context, myViewModel = myViewModel, colorButton = blueButtonColor.value)
             }
             Column {
-                createButton(color = Colors.GREEN, context = context, myViewModel = myViewModel, colorButton = greenButtonColor.value)
-                createButton(color = Colors.YELLOW, context = context, myViewModel = myViewModel, colorButton = yellowButtonColor.value)
+                CreateButton(color = Colors.GREEN, context = context, myViewModel = myViewModel, colorButton = greenButtonColor.value)
+                CreateButton(color = Colors.YELLOW, context = context, myViewModel = myViewModel, colorButton = yellowButtonColor.value)
             }
         }
         Spacer(modifier = Modifier.weight(1f))

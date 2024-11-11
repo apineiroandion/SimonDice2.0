@@ -1,20 +1,28 @@
 package com.example.simondice20
 
+import android.app.Application
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.compose.ui.window.application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.simondice20.Datos.isPrinted
 import com.example.simondice20.Datos.ronda
 import com.example.simondice20.Datos.secuenciaJugador
 import com.example.simondice20.Datos.secuenciaMaquina
 import com.example.simondice20.Datos.toastText
 import com.example.simondice20.Estados.*
+import kotlinx.coroutines.launch
 
 
-class MyViewModel: ViewModel() {
+class MyViewModel(application: Application) : AndroidViewModel(application) {
     var estadoLiveData: MutableLiveData<Estados> = MutableLiveData(ESPERANDO)
+    private val recordDao = RecordDatabase.getDatabase(application).recordDao()
 
     private fun aumentarRonda() {
         ronda.value += 1
@@ -72,6 +80,19 @@ class MyViewModel: ViewModel() {
 
     private fun estadoEsperando() {
         estadoLiveData.value = ESPERANDO
+    }
+
+    fun saveRecord(value: Int) {
+        viewModelScope.launch {
+            recordDao.insert(Record(value = value))
+        }
+    }
+
+    fun getRecord(callback: (Record?) -> Unit) {
+        viewModelScope.launch {
+            val record = recordDao.getRecord()
+            callback(record)
+        }
     }
 
 //    fun getRonda(): Int {
