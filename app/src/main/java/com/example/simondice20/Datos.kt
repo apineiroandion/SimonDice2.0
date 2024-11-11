@@ -4,10 +4,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 
 object Datos {
+    val record = mutableStateOf(0)
     var ronda = mutableStateOf(0)
     val secuenciaMaquina = mutableListOf<Int>()
     val secuenciaJugador = mutableListOf<Int>()
     var toastText = ""
+    val isPrinted = mutableStateOf(false)
 
 
 }

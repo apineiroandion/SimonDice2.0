@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.simondice20.Datos.isPrinted
 import com.example.simondice20.Datos.secuenciaMaquina
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -70,6 +71,7 @@ fun Greeting(modifier: Modifier = Modifier, myViewModel: MyViewModel) {
 
 
     suspend fun colorearSecuencia (){
+        isPrinted.value = true
         for (i in secuenciaMaquina){
             delay(300)
             when(i){
@@ -100,7 +102,7 @@ fun Greeting(modifier: Modifier = Modifier, myViewModel: MyViewModel) {
 
     myViewModel.estadoLiveData.observe(LocalLifecycleOwner.current) {
         _colorear = myViewModel.estadoLiveData.value!!.colorearSecuencia
-        if (_colorear){
+        if (_colorear && !isPrinted.value){
             coroutineScope.launch {
                 colorearSecuencia()
             }

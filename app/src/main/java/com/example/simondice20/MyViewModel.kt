@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.simondice20.Datos.isPrinted
 import com.example.simondice20.Datos.ronda
 import com.example.simondice20.Datos.secuenciaJugador
 import com.example.simondice20.Datos.secuenciaMaquina
@@ -21,6 +22,7 @@ class MyViewModel: ViewModel() {
     fun generarSecuencia() {
         aumentarRonda()
         secuenciaMaquina.add((0..3).random())
+        isPrinted.value = false
         estadoGenerando()
     }
     fun click(buttonId: Int, context: Context) {
