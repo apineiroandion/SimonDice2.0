@@ -30,11 +30,17 @@ import com.example.simondice20.Datos.secuenciaMaquina
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+/**
+ * Función para crear la interfaz de usuario
+ */
 @Composable
 fun UI(model: MyViewModel) {
     Greeting(myViewModel = model)
 }
 
+/**
+ * Función para crear un botón
+ */
 @Composable
 fun createButton(color: Colors, context: Context, myViewModel: MyViewModel, colorButton: Color = color.color) {
     var _activo by remember { mutableStateOf(myViewModel.estadoLiveData.value!!.boton_activo) }
@@ -58,6 +64,9 @@ fun createButton(color: Colors, context: Context, myViewModel: MyViewModel, colo
     }
 }
 
+/**
+ * Función que crea la interfaz de usuario y colorea los botones
+ */
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun Greeting(modifier: Modifier = Modifier, myViewModel: MyViewModel) {
@@ -109,8 +118,9 @@ fun Greeting(modifier: Modifier = Modifier, myViewModel: MyViewModel) {
         }
     }
 
-
-
+    /**
+     * Función para crear el botón de inicio
+     */
     @Composable
     fun createStartButton(myViewModel: MyViewModel){
         var _activo by remember { mutableStateOf(myViewModel.estadoLiveData.value!!.boton_activo) }
