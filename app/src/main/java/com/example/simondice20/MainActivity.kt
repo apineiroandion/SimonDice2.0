@@ -10,7 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.simondice20.ui.theme.SimonDice20Theme
 
+/**
+ * Clase principal de la aplicación
+ */
 class MainActivity : ComponentActivity() {
+    // Inicialización de la aplicación
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewModel: MyViewModel = MyViewModel()

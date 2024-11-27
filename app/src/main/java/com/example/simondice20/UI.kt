@@ -1,5 +1,6 @@
 package com.example.simondice20
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,33 +25,38 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.simondice20.Datos.isPrinted
 import com.example.simondice20.Datos.secuenciaMaquina
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+/**
+ * Función para crear la interfaz de usuario
+ */
 @Composable
 fun UI(model: MyViewModel) {
-    Greeting(MyViewModel = model)
+    Greeting(myViewModel = model)
 }
 
+/**
+ * Función para crear un botón
+ */
 @Composable
-fun createButton(color: Colors, context: Context, myViewModel: MyViewModel){
-    val buttonColor by remember { mutableStateOf(color.color) }
+fun createButton(color: Colors, context: Context, myViewModel: MyViewModel, colorButton: Color = color.color) {
     var _activo by remember { mutableStateOf(myViewModel.estadoLiveData.value!!.boton_activo) }
 
     myViewModel.estadoLiveData.observe(LocalLifecycleOwner.current) {
-        // Log.d(TAG_LOG, "Oserver Estado: ${miViewModel.estadoLiveData.value!!.name}")
         _activo = myViewModel.estadoLiveData.value!!.boton_activo
     }
 
     Button(
-        onClick = {
-            if(_activo) myViewModel.click(color.id, context) },
+        enabled = _activo,
+        onClick = {myViewModel.click(color.id, context) },
         modifier = Modifier
             .padding(10.dp)
             .size(150.dp, 100.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = buttonColor,
+            containerColor = colorButton,
             contentColor = Color.White,
         )
     ) {
@@ -58,14 +64,23 @@ fun createButton(color: Colors, context: Context, myViewModel: MyViewModel){
     }
 }
 
+/**
+ * Función que crea la interfaz de usuario y colorea los botones
+ */
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun Greeting(modifier: Modifier = Modifier, MyViewModel: MyViewModel) {
+fun Greeting(modifier: Modifier = Modifier, myViewModel: MyViewModel) {
     val context = LocalContext.current
     val redButtonColor = remember { mutableStateOf(Colors.RED.color) }
     val blueButtonColor = remember { mutableStateOf(Colors.BLUE.color) }
     val greenButtonColor = remember { mutableStateOf(Colors.GREEN.color) }
     val yellowButtonColor = remember { mutableStateOf(Colors.YELLOW.color) }
+    val coroutineScope = rememberCoroutineScope()
+    var _colorear by remember { mutableStateOf(myViewModel.estadoLiveData.value!!.colorearSecuencia) }
+
+
     suspend fun colorearSecuencia (){
+        isPrinted.value = true
         for (i in secuenciaMaquina){
             delay(300)
             when(i){
@@ -91,7 +106,43 @@ fun Greeting(modifier: Modifier = Modifier, MyViewModel: MyViewModel) {
                 }
             }
         }
-        MyViewModel.estadoJugando()
+        myViewModel.estadoJugando()
+    }
+
+    myViewModel.estadoLiveData.observe(LocalLifecycleOwner.current) {
+        _colorear = myViewModel.estadoLiveData.value!!.colorearSecuencia
+        if (_colorear && !isPrinted.value){
+            coroutineScope.launch {
+                colorearSecuencia()
+            }
+        }
+    }
+
+    /**
+     * Función para crear el botón de inicio
+     */
+    @Composable
+    fun createStartButton(myViewModel: MyViewModel){
+        var _activo by remember { mutableStateOf(myViewModel.estadoLiveData.value!!.boton_activo) }
+
+        myViewModel.estadoLiveData.observe(LocalLifecycleOwner.current) {
+            _activo = myViewModel.estadoLiveData.value!!.start_activo
+        }
+        TextButton(
+            enabled = _activo,
+            onClick = {
+                    myViewModel.generarSecuencia()
+            },
+            modifier = Modifier
+                .padding(10.dp)
+                .size(300.dp, 100.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Gray,
+                contentColor = Color.White,
+            )
+        ) {
+            Text(text = "START ronda: " + Datos.ronda.value)
+        }
     }
 
     Column (
@@ -105,73 +156,17 @@ fun Greeting(modifier: Modifier = Modifier, MyViewModel: MyViewModel) {
         )
         Row {
             Column {
-                //createButton(color = Colors.RED, context = context, myViewModel = MyViewModel)
-                Button(onClick = { MyViewModel.click(Colors.RED.id, context) },
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .size(150.dp, 100.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = redButtonColor.value,
-                        contentColor = Color.White,
-                    )
-                ) {
-                    Text(text = Colors.RED.nombre)
-                }
-                Button(onClick = { MyViewModel.click(Colors.BLUE.id, context) },
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .size(150.dp, 100.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = blueButtonColor.value,
-                        contentColor = Color.White,
-                    )
-                ) {
-                    Text(text = Colors.BLUE.nombre)
-                }
+                createButton(color = Colors.RED, context = context, myViewModel = myViewModel, colorButton = redButtonColor.value)
+                createButton(color = Colors.BLUE, context = context, myViewModel = myViewModel, colorButton = blueButtonColor.value)
             }
             Column {
-                Button(onClick = { MyViewModel.click(Colors.GREEN.id, context) },
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .size(150.dp, 100.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = greenButtonColor.value,
-                        contentColor = Color.White,
-                    )
-                ) {
-                    Text(text = Colors.GREEN.nombre)
-                }
-                Button(onClick = { MyViewModel.click(Colors.YELLOW.id, context) },
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .size(150.dp, 100.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = yellowButtonColor.value,
-                        contentColor = Color.White,
-                    )
-                ) {
-                    Text(text = Colors.YELLOW.nombre)
-                }
+                createButton(color = Colors.GREEN, context = context, myViewModel = myViewModel, colorButton = greenButtonColor.value)
+                createButton(color = Colors.YELLOW, context = context, myViewModel = myViewModel, colorButton = yellowButtonColor.value)
             }
         }
         Spacer(modifier = Modifier.weight(1f))
-        val coroutineScope = rememberCoroutineScope()
-        TextButton(onClick = {
-            coroutineScope.launch {
-                MyViewModel.generarSecuencia()
-                colorearSecuencia()
-            }
-        },
-            modifier = Modifier
-                .padding(10.dp)
-                .size(300.dp, 100.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Gray,
-                contentColor = Color.White,
-            )
-        ) {
-            Text(text = "START ronda: " + Datos.ronda.value)
-        }
+
+        createStartButton(myViewModel)
     }
 
 }
